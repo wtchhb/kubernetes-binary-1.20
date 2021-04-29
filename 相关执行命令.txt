@@ -1,0 +1,102 @@
+ETCDCTL_API=3 /opt/etcd/bin/etcdctl --cacert=/opt/etcd/ssl/ca.pem --cert=/opt/etcd/ssl/server.pem --key=/opt/etcd/ssl/server-key.pem --endpoints="https://192.168.0.12:2379,https://192.168.0.34:2379,https://192.168.0.48:2379" endpoint health --write-out=table
+
+
+- kube-controller-manager kubeconfig
+KUBE_CONFIG="/opt/kubernetes/cfg/kube-controller-manager.kubeconfig"
+KUBE_APISERVER="https://192.168.0.12:6443"
+
+kubectl config set-cluster kubernetes \
+--certificate-authority=/opt/kubernetes/ssl/ca.pem \
+--embed-certs=true \
+--server=${KUBE_APISERVER} \
+--kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-credentials kube-controller-manager \
+--client-certificate=./kube-controller-manager.pem \
+--client-key=./kube-controller-manager-key.pem \
+--embed-certs=true \
+--kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-context default \
+--cluster=kubernetes \
+--user=kube-controller-manager \
+--kubeconfig=${KUBE_CONFIG}
+
+kubectl config use-context default --kubeconfig=${KUBE_CONFIG}
+
+
+- kube-scheduler kubeconfig 
+KUBE_CONFIG="/opt/kubernetes/cfg/kube-controller-manager.kubeconfig"
+KUBE_APISERVER="https://192.168.0.12:6443"
+
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-credentials kube-controller-manager \
+  --client-certificate=./kube-controller-manager.pem \
+  --client-key=./kube-controller-manager-key.pem \
+  --embed-certs=true \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kube-controller-manager \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config use-context default --kubeconfig=${KUBE_CONFIG}
+
+
+
+- admin kubeconfig
+mkdir /root/.kube
+KUBE_CONFIG="/root/.kube/config"
+KUBE_APISERVER="https://192.168.0.12:6443"
+
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-credentials cluster-admin \
+  --client-certificate=./admin.pem \
+  --client-key=./admin-key.pem \
+  --embed-certs=true \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=cluster-admin \
+  --kubeconfig=${KUBE_CONFIG}
+
+kubectl config use-context default --kubeconfig=${KUBE_CONFIG}
+
+
+- 授权kubelet-bootstrap用户允许请求证书
+kubectl create clusterrolebinding kubelet-bootstrap \
+--clusterrole=system:node-bootstrapper \
+--user=kubelet-bootstrap
+
+
+- kubelet kubeconfig
+KUBE_CONFIG="/opt/kubernetes/cfg/bootstrap.kubeconfig"
+KUBE_APISERVER="https://192.168.0.12:6443" # apiserver IP:PORT
+TOKEN="b4db7c44c04144a9f043e672d8a0af33" # 与token.csv里保持一致
+
+# 生成 kubelet bootstrap kubeconfig 配置文件
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=${KUBE_CONFIG}
+kubectl config set-credentials "kubelet-bootstrap" \
+  --token=${TOKEN} \
+  --kubeconfig=${KUBE_CONFIG}
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user="kubelet-bootstrap" \
+  --kubeconfig=${KUBE_CONFIG}
+kubectl config use-context default --kubeconfig=${KUBE_CONFIG}

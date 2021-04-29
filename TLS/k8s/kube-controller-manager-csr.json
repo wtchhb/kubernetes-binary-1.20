@@ -1,0 +1,16 @@
+cat > kube - controller - manager - csr.json << EOF {
+    "CN": "system:kube-controller-manager",
+    "hosts": [],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [{
+        "C": "CN",
+        "L": "Beijing",
+        "ST": "Beijing",
+        "O": "system:masters",
+        "OU": "System"
+    }]
+}
+EOF

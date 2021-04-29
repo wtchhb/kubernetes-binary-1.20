@@ -1,0 +1,4 @@
+cat > daemon.json << EOF {
+    "registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
+}
+EOF

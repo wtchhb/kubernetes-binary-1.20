@@ -1,0 +1,18 @@
+cat kubelet.service << EOF
+[Unit]
+Description=Kubernetes Kubelet Server
+After=docker.service
+
+[Service]
+EnvironmentFile=/opt/kubernetes/cfg/kubelet.conf
+ExecStart=/opt/kubernetes/bin/kubelet $KUBELET_OPTS
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now kubelet
+systemctl status kubelet

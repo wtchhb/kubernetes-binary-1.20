@@ -1,0 +1,24 @@
+cat > /usr/lib/systemd/system/docker.service << EOF
+[Unit]
+Description=Docker Server
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/dockerd
+ExecReload=/bin/kill -s HUP $MAINPID
+LimitNOFILE=infinity
+LimitNRPOC=infinity
+LomitCORE=infinity
+TimeoutStartsec=0
+Delegate=yes
+KillMode=process
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+EOF

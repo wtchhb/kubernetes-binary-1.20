@@ -1,0 +1,21 @@
+cat > server - csr.json << EOF {
+    "CN": "etcd",
+    "hosts": [
+        "192.168.0.12",
+        "192.168.0.34",
+        "192.168.0.48",
+        "192.168.0.17",
+        "192.168.0.20"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [{
+        "C": "CN",
+        "L": "Beijing",
+        "LT": "Beijing"
+    }]
+}
+EOF
+cfssl gencert - ca = ca.pem - ca - key = ca - key.pem - config = ca - config.json - profile = www server - csr.json | cfssljson - bare server
