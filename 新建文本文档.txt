@@ -1,0 +1,4 @@
+git remote add origin https://github.com/wtchhb/kubernetes-binary-1.20.git
+   18  git branch -M main
+
+   20  git push -u origin main

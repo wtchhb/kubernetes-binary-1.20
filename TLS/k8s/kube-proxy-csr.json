@@ -1,5 +1,5 @@
-cat > kube - controller - manager - csr.json << EOF {
-    "CN": "system:kube-controller-manager",
+cat > kube - proxy - csr.json << EOF {
+    "CN": "system:kube-proxy",
     "hosts": [],
     "key": {
         "algo": "rsa",
@@ -9,7 +9,7 @@ cat > kube - controller - manager - csr.json << EOF {
         "C": "CN",
         "L": "BeiJing",
         "ST": "BeiJing",
-        "O": "system:masters",
+        "O": "k8s",
         "OU": "System"
     }]
 }

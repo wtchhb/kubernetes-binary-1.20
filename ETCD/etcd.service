@@ -1,4 +1,4 @@
-cat > /usr/lib/system/system/etcd.service << EOF
+cat > etcd.service << EOF
 [Unit]
 Description=Etcd Server
 After=network.target

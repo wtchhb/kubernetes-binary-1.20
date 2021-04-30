@@ -1,0 +1,7 @@
+cat > token.csv << EOF
+36bb2b8758e824f38094a836930bba9f,kubelet-bootstrap,10001,"system:node-bootstrapper"
+EOF
+
+head -c 16 /dev/urandom | od -An -t x | tr -d ' '
+36bb2b8758e824f38094a836930bba9f
+
